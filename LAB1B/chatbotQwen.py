@@ -16,9 +16,9 @@ def getHistory(length):
         return ""                                                  
     history = "Use the conversation history to understand the user's latest question.\n\n" + "The following is the conversation historty: \n\n"
 
-    for chat in chatHistory[-length:]:                              # extract promts and responses
-        history += f"User: {chat['prompt']}\n"
-        history += f"Assistant: {chat['response']}\n"
+    for i in range(len(chatHistory)-length, len(chatHistory)):                              # extract promts and responses
+            history += f"User: {chatHistory[i]['prompt']}\n"
+            history += f"Assistant: {chatHistory[i]['response']}\n"
 
     return history + "End of conversation history\n\n"
 
@@ -47,36 +47,36 @@ def main():
     enableHistory = True
 
     print("Hi im your first chatbot in the ID1214 course!")
-
+    print("Commands: \n quit - history - prompt - memory")
     enableHistory = bool(int(input("enableHistory 0/1: ")))
-    while True:
-        inputText = input("User input > ")
 
-        if inputText.lower() == "quit":
-            print("Exiting chatbot...")
-            break
-        if inputText.lower() == "debug":                  # for debug purposes, regarding context.
-            print("History: \n\n",history)
-            print("\n Prompt: \n", prompt)
-            continue
-        if inputText.lower() == "clear":
-            chatHistory.clear()
-            resopnseIndex = 0 
-            history = "" 
-            prompt = ""
-            continue
-        if not enableHistory:                                        # No conversation history
+    while True:
+        inputText = input("User input > ").lower()
+        match inputText:
+            case "quit":
+                print("Exiting chatbot...")
+                break
+            case "history":
+                print("History: \n\n",history)
+                continue
+            case "prompt":
+                print("\n Prompt: \n", prompt)
+                continue
+            case "memory":
+                enableHistory = bool(int(input("enableHistory 0/1: ")))
+                continue
+
+        if enableHistory:
+            history = getHistory((resopnseIndex))                                        # retrival of history
+            prompt = systemPrompt + history + "Current user question: " + inputText      # model input string, with sysPrompt, context and user input
+            response = generateResponse(prompt, tokenizer, model)
+            print("Model response: ", response)
+
+            resopnseIndex += 1
+            saveHistory(inputText, response)
+        else:
             prompt = inputText    
             response = generateResponse(prompt, tokenizer, model)
             print("Model response: ", response)
-            continue
-        
-        history = getHistory((resopnseIndex))                                        # retrival of history
-        prompt = systemPrompt + history + "Current user question: " + inputText      # model input string, with sysPrompt, context and user input
-        response = generateResponse(prompt, tokenizer, model)
-        print("Model response: ", response)
-        
-        resopnseIndex += 1
-        saveHistory(inputText, response)
 
 main()
