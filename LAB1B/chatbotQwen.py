@@ -3,7 +3,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 
 qwen_2_5 = "./models/qwen2.5-1.5b-instruct"
 chatHistory = [{"prompt": "", "response": ""}]
-systemPrompt = "You are a helpfull Assistant. Keep your answers short.\n"
+systemPrompt = "You are a helpful Assistant. Keep your answers short.\n"
 
 def saveHistory(inputText, response):    
     chatHistory.append({            # Saves  each back and forth as a dictionary

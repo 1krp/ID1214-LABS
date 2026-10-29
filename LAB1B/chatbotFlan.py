@@ -3,7 +3,7 @@ from transformers import T5Tokenizer, T5ForConditionalGeneration
 
 flan_t5_small = "./models/model-flan-t5-small"
 chatHistory = [{"prompt": "", "response": ""}]
-systemPrompt = "You are a helpfull Assistant.\n"
+systemPrompt = "You are a helpful Assistant.\n"
 
 def saveHistory(inputText, response):    
     chatHistory.append({            # appends each back and forth to the chat history
@@ -14,7 +14,7 @@ def saveHistory(inputText, response):
 def getHistory(length):
     if length <= 0:
         return ""                                                  
-    history = "Use the conversation history to understand the user's latest question.\n\n" + "The following is the conversation historty: \n\n"
+    history = "Use the conversation history to understand the user's latest question.\n\n" + "The following is the conversation history: \n\n"
     # extract promts and responses
     for i in range(len(chatHistory)-length, len(chatHistory)):                              # extract promts and responses
         history += f"User: {chatHistory[i]['prompt']}\n"
@@ -66,5 +66,5 @@ def main():
         else:
             prompt = systemPrompt + inputText                                           # Building of the prompt string excluding history
             response = generateResponse(prompt, tokenizer, model)
-            print("Model response: ", response)
+            print("NO HISTORY - Model response: ", response)
 main()
